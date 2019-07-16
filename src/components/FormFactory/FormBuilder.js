@@ -1,38 +1,38 @@
-import FormFactory from '@/components/FormFactory/FormFactory.vue';
+import FormFactory from '@/components/FormFactory/FormFactory.vue'
 
 export default class FormBuilder {
-  constructor () {
+  constructor() {
     this.props = {
-      fields: []
+      fields: [],
     }
   }
 
-  withProvider (provider) {
-    this.provider = provider
+  withProvider(provider) {
+    this.provider = provider || []
     return this
   }
 
-  addField (field) {
+  addField(field) {
     this.props.fields.push(field)
     return this
   }
 
-  build () {
-    const Provider = this.provider
-    const props = this.props
+  build() {
+    const Provider = this.provider || []
+    const { props } = this
 
     return {
       props: {
         id: {
           default: null,
-          type: [Number, String]
-        }
+          type: [Number, String],
+        },
       },
-      render (h) {
+      render(h) {
         return h(Provider, [
-          h(FormFactory, { props: { id: this.id, ...props } })
+          h(FormFactory, { props: { id: this.id, ...props } }),
         ])
-      }
+      },
     }
   }
 }

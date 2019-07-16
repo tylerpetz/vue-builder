@@ -1,6 +1,16 @@
 <template>
-  <form class="form-factory" @submit.prevent="submit">
-    <div v-if="success" class="form-factory-success">Success!</div>
+  <form
+    class="form-factory"
+    @submit.prevent="submit"
+  >
+    <b-message
+      v-if="success"
+      type="is-success"
+      title="Success!"
+      aria-close-label="Close message"
+    >
+      Your form was submitted.
+    </b-message>
     <template v-else>
       <b-field
         v-for="field in fieldsWithDefaults"
@@ -10,72 +20,87 @@
         :message="$v.data[field.name].$error ? 'Please fill in this field correctly.' : ''"
       >
         <Component
-          v-model="data[field.name]"
           :is="field.component"
+          v-model="data[field.name]"
           v-bind="{ ...field.options.props, ...field.options.attrs }"
           @input="$v.data[field.name].$touch()"
-        />
+        >
+          <template v-if="field.selectOptions">
+            <option
+              v-for="option in field.selectOptions"
+              :key="option.name"
+              :value="option.value"
+            >
+              {{ option.text }}
+            </option>
+          </template>
+        </Component>
       </b-field>
-      <button>Submit</button>
+      <b-button
+        native-type="submit"
+        type="is-primary"
+      >
+        Submit
+      </b-button>
     </template>
   </form>
 </template>
 
 <script>
-import { validationMixin } from "vuelidate";
+import { validationMixin } from 'vuelidate'
 
 const defaultField = {
   component: null,
-  label: "",
-  name: "",
+  label: '',
+  name: '',
   options: {},
-  validation: {}
-};
+  validation: {},
+}
 
 export default {
-  name: "FormFactory",
+  name: 'FormFactory',
   mixins: [validationMixin],
   // Injecting dependencies makes it
   // possible or reuse this component
   // for all kinds of content types.
-  inject: ["fetch", "post"],
+  inject: ['fetch', 'post'],
   props: {
     fields: {
       default: () => [],
-      type: Array
+      type: Array,
     },
     id: {
       default: null,
-      type: [Number, String]
-    }
+      type: [Number, String],
+    },
   },
   data() {
     return {
       data: {},
-      success: false
-    };
+      success: false,
+    }
   },
   computed: {
     // Apply default field configuration
     // to make sure all properties we rely
     // on in the template do exist.
     fieldsWithDefaults() {
-      return this.fields.map(x => ({ ...defaultField, ...x }));
-    }
+      return this.fields.map(x => ({ ...defaultField, ...x }))
+    },
   },
   async created() {
     if (this.id) {
-      this.data = await this.fetch(this.id);
+      this.data = await this.fetch(this.id)
     }
   },
   methods: {
     async submit() {
-      this.$v.$touch();
-      if (this.$v.$error) return;
+      this.$v.$touch()
+      if (this.$v.$error) return
 
-      const { success } = await this.post(this.data);
-      this.success = success;
-    }
+      const { success } = await this.post(this.data)
+      this.success = success
+    },
   },
   // The vuelidate validation configuration is
   // automatically generated for us.
@@ -85,21 +110,11 @@ export default {
       .reduce(
         (prev, field) => ({
           ...prev,
-          [field.name]: field.validation
+          [field.name]: field.validation,
         }),
         {}
-      );
-    return { data };
-  }
-};
+      )
+    return { data }
+  },
+}
 </script>
-
-<style>
-.form-factory > :not(:first-child) {
-  margin-top: 1em;
-}
-
-.form-factory-success {
-  color: green;
-}
-</style>

@@ -1,44 +1,66 @@
-import { required } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators'
 
-import UserProvider from '@/components/UserProvider.vue';
+// Form components
+import BInput from 'buefy/src/components/input/Input.vue'
+import BSelect from 'buefy/src/components/select/Select.vue'
 
-import BInput from 'buefy/src/components/input/Input.vue';
+// Provider with fetch/post methods
+import BlockProvider from '@/components/BlockProvider.vue'
+
 
 export default class FormDirector {
-  constructor (builder) {
+  constructor(builder) {
     this.builder = builder
-    console.log(builder)
   }
 
-  makeUserForm () {
+  makeHeaderImageForm() {
     return this.builder
-      .withProvider(UserProvider)
+      .withProvider(BlockProvider)
       .addField({
         component: BInput,
         label: 'Title',
         name: 'title',
         options: {
           attrs: {
-            placeholder: 'Enter Title'
-          }
+            placeholder: 'Enter Title',
+          },
         },
         validation: {
-          required
-        }
+          required,
+        },
       })
       .addField({
         component: BInput,
-        label: 'Description',
-        name: 'description',
+        label: 'Subtitle',
+        name: 'subtitle',
         options: {
           attrs: {
-            type: 'textarea',
-            placeholder: 'Enter short description'
-          }
+            placeholder: 'Enter Subtitle',
+          },
         },
         validation: {
-          required
-        }
+          required,
+        },
+      })
+      .addField({
+        component: BSelect,
+        label: 'Theme',
+        name: 'theme',
+        options: {
+          attrs: {
+            placeholder: 'Select Theme',
+          },
+        },
+        selectOptions: [
+          {
+            value: 1,
+            text: 'Theme 1',
+          },
+          {
+            value: 2,
+            text: 'Theme 2',
+          },
+        ],
       })
       .build()
   }

@@ -1,22 +1,21 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <img alt="Vue logo" src="../assets/logo.png" />
-      <div class="tile is-primary">
-        <UserForm />
-      </div>
+  <div class="columns is-centered">
+    <div class="column is-half">
+      <HeaderImageForm />
+
+      <HeaderImageForm :id="1" />
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
-import FormBuilder from "@/components/FormFactory/FormBuilder";
-import FormDirector from "@/components/FormFactory/FormDirector";
+import FormBuilder from '@/components/FormFactory/FormBuilder'
+import FormDirector from '@/components/FormFactory/FormDirector'
 
 export default {
-  name: "home",
+  name: 'Home',
   components: {
-    UserForm: new FormDirector(new FormBuilder()).makeUserForm()
-  }
-};
+    HeaderImageForm: new FormDirector(new FormBuilder()).makeHeaderImageForm(),
+  },
+}
 </script>
